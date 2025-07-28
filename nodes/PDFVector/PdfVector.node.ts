@@ -480,12 +480,12 @@ export class PdfVector implements INodeType {
 
 				if (resource === 'academic') {
 					if (operation === 'search') {
-						const query = this.getNodeParameter('query', i) as string;
-						const providers = this.getNodeParameter('providers', i) as string[];
-						const limit = this.getNodeParameter('limit', i) as number;
-						const offset = this.getNodeParameter('offset', i) as number;
-						const yearFrom = this.getNodeParameter('yearFrom', i) as number;
-						const yearTo = this.getNodeParameter('yearTo', i) as number;
+						const query = this.getNodeParameter('query', i);
+						const providers = this.getNodeParameter('providers', i);
+						const limit = this.getNodeParameter('limit', i);
+						const offset = this.getNodeParameter('offset', i);
+						const yearFrom = this.getNodeParameter('yearFrom', i);
+						const yearTo = this.getNodeParameter('yearTo', i);
 						const additionalFields = this.getNodeParameter('additionalFields', i);
 
 						const body: any = {
@@ -498,7 +498,7 @@ export class PdfVector implements INodeType {
 						};
 
 						// Add fields from additional fields
-						if (additionalFields.fields && (additionalFields.fields as string[]).length > 0) {
+						if (additionalFields.fields && Array.isArray(additionalFields.fields) && additionalFields.fields.length > 0) {
 							body.fields = additionalFields.fields;
 						}
 
@@ -513,17 +513,17 @@ export class PdfVector implements INodeType {
 							},
 						);
 					} else if (operation === 'fetch') {
-						const idsString = this.getNodeParameter('ids', i) as string;
-						const fields = this.getNodeParameter('fields', i) as string[];
+						const idsString = this.getNodeParameter('ids', i);
+						const fields = this.getNodeParameter('fields', i);
 
 						// Convert comma-separated IDs to array and trim whitespace
-						const ids = idsString.split(',').map(id => id.trim()).filter(id => id);
+						const ids = String(idsString).split(',').map(id => id.trim()).filter(id => id);
 
 						const body: any = {
 							ids,
 						};
 
-						if (fields && fields.length > 0) {
+						if (fields && Array.isArray(fields) && fields.length > 0) {
 							body.fields = fields;
 						}
 
@@ -540,8 +540,8 @@ export class PdfVector implements INodeType {
 					}
 				} else if (resource === 'document') {
 					if (operation === 'parse') {
-						const url = this.getNodeParameter('url', i) as string;
-						const useLLM = this.getNodeParameter('useLLM', i) as string;
+						const url = this.getNodeParameter('url', i);
+						const useLLM = this.getNodeParameter('useLLM', i);
 
 						const body: any = {
 							url,
@@ -559,7 +559,7 @@ export class PdfVector implements INodeType {
 							},
 						);
 					} else if (operation === 'upload') {
-						const fileType = this.getNodeParameter('fileType', i) as string;
+						const fileType = this.getNodeParameter('fileType', i);
 
 						const body = {
 							fileType,
@@ -591,7 +591,7 @@ export class PdfVector implements INodeType {
 				}
 
 				const executionData = this.helpers.constructExecutionMetaData(
-					this.helpers.returnJsonArray(responseData as any),
+					this.helpers.returnJsonArray(responseData),
 					{ itemData: { item: i } },
 				);
 
